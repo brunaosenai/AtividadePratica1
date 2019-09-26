@@ -1,0 +1,56 @@
+enable
+clock set 15:02:35 25 sep 2019
+configure terminal
+hostname SW-01
+banner motd "ACESSO APENAS PARA PESSOAS AUTORIZADAS!!!"
+enable secret SenhadaEnable
+line console 0
+password SenhadaConsole
+login
+exit
+ip domain-name grupo1.local
+crypto key generate rsa general-keys modulus 1024
+line vty 0 15
+password SenhadaVTY
+login local
+transport input ssh
+exec-timeout 9
+exit
+username maurocortez privilege 15 secret maurocortez
+username isabellabento privilege 15 secret isabellabento
+username danieljunior privilege 15 secret danieljunior
+username victorgomes privilege 15 secret victorgomes
+username brunogaldino privilege 15 secret brunogaldino
+service password-encryption
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+exit
+interface f0/1
+switchport mode access
+switchport access vlan 10
+no shutdown
+interface vlan 10
+ip address 192.168.1.158 255.255.255.224
+description VLAN10
+interface f0/2
+switchport mode access
+switchport access vlan 20
+no shutdown
+interface VLAN20	
+ip address 192.168.1.126 255.255.255.128
+interface f0/3
+switchport mode access
+switchport access vlan 30
+no shutdown
+interface vlan 30
+ip address 192.168.1.174 255.255.255.240
+description VLAN30
+interface g0/1
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,30,99	
+do wr
